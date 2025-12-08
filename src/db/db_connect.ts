@@ -20,3 +20,5 @@ export const db = new Pool({
 db.on("error", (err: any) => {
   console.error("Unexpected Postgres error", err);
 });
+
+console.log("Database connection done")

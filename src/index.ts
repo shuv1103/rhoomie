@@ -23,4 +23,4 @@ db.connect()
     process.exit(1);
 });
 
-console.log("working!");
+

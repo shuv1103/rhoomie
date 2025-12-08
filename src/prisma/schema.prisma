@@ -1,0 +1,139 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String     @id @default(uuid())
+  fullName        String
+  age             Int
+  gender          Gender
+  occupation      Occupation
+  collegeCompany  String?
+
+  isKycVerified   Boolean @default(false)
+
+  preferences     Preference?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Preference {
+  id        String   @id @default(uuid())
+  userId    String @unique
+  // 1-to-1 relation to User model
+  user      User     @relation(fields: [userId], references: [id])
+
+  // ---- MOVE-IN & ROOM ----
+  preferredMoveIn DateTime?
+  monthlyBudget   Int
+  roomType         RoomType
+  preferredGender PreferredGender
+
+   // ---- LOCATION ----
+  city             String       // FAST FILTER
+  area             String?      // Specific locality
+
+   // ---- LIFESTYLE HABITS ----
+  dieting          Diet
+  smoking          Habit
+  alcohol          Habit
+  partying         Habit
+  cleaning         Cleaning
+  wakeUpTime       WakeTime
+  sleepTime        SleepTime
+  sharedBathroom   BathroomRule
+  gaming           Habit
+
+  languages        String[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+model Preference {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+
+  partying            HabitLevel
+  languages           String[]
+  wakeUpTime          WakeUpTime
+  sleepTime           SleepTime
+  smoking             HabitLevel
+  alcohol             HabitLevel
+  dietaryPreference   DietType
+  cleaningFrequency   CleaningFrequency
+  sharedBathroom      BathroomComfort
+  gaming              HabitLevel
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+// ENUMS
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHERS
+}
+
+enum PreferredGender {
+  MALE
+  FEMALE
+  OTHERS
+}
+
+enum Occupation {
+  STUDENT
+  WORKING_PROFESSIONAL
+  OTHERS
+}
+
+enum RoomType {
+  // PG room types:-
+  SINGLE
+  DOUBLE
+  TRIPLE
+  FLAT
+}
+
+enum Habit{
+  YES
+  NO
+  OCCASIONALLY
+}
+
+enum WakeUpTime {
+  EARLY
+  MID
+  LATE
+}
+
+enum SleepTime {
+  BEFORE_11
+  AFTER_11
+}
+
+enum DietType {
+  VEG
+  NON_VEG
+  EGGETARIAN
+  JAIN
+  VEGAN
+}
+
+enum CleaningFrequency {
+  DAILY
+  WEEKLY
+  RARELY
+}

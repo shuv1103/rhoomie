@@ -13,9 +13,9 @@
 .env.*    # optional, ignore any .env.local, .env.dev etc.
 
 # Prisma
-/prisma/migrations/
-/src/generated/   # generated Prisma client
-/.prisma/
+/prisma/migrations
+/src/generated   # generated Prisma client
+/.prisma
 
 # Logs
 npm-debug.log*

@@ -1,86 +1,64 @@
 // prisma/schema.prisma
+
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output = "../generated"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
-  id              String     @id @default(uuid())
+  id              String       @id @default(uuid())
   fullName        String
+  email           String       @unique
+  googleId        String?      @unique
   age             Int
   gender          Gender
   occupation      Occupation
   collegeCompany  String?
 
-  isKycVerified   Boolean @default(false)
+  isKycVerified   Boolean      @default(false)
 
   preferences     Preference?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
 }
 
 model Preference {
-  id        String   @id @default(uuid())
-  userId    String @unique
-  // 1-to-1 relation to User model
-  user      User     @relation(fields: [userId], references: [id])
+  id              String       @id @default(uuid())
+  userId          String       @unique
+  user            User         @relation(fields: [userId], references: [id])
 
   // ---- MOVE-IN & ROOM ----
   preferredMoveIn DateTime?
   monthlyBudget   Int
-  roomType         RoomType
+  roomType        RoomType
   preferredGender PreferredGender
 
-   // ---- LOCATION ----
-  city             String       // FAST FILTER
-  area             String?      // Specific locality
+  // ---- LOCATION ----
+  city            String
+  area            String?
 
-   // ---- LIFESTYLE HABITS ----
-  dieting          Diet
-  smoking          Habit
-  alcohol          Habit
-  partying         Habit
-  cleaning         Cleaning
-  wakeUpTime       WakeTime
-  sleepTime        SleepTime
-  sharedBathroom   BathroomRule
-  gaming           Habit
+  // ---- LIFESTYLE ----
+  dieting         DietType
+  smoking         Habit
+  alcohol         Habit
+  partying        Habit
+  cleaning        CleaningFrequency
+  wakeUpTime      WakeTime
+  sleepTime       SleepTime
+  gaming          Habit
 
-  languages        String[]
+  languages       String[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
 }
-
-model Preference {
-  id        String   @id @default(uuid())
-  userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id])
-
-  partying            HabitLevel
-  languages           String[]
-  wakeUpTime          WakeUpTime
-  sleepTime           SleepTime
-  smoking             HabitLevel
-  alcohol             HabitLevel
-  dietaryPreference   DietType
-  cleaningFrequency   CleaningFrequency
-  sharedBathroom      BathroomComfort
-  gaming              HabitLevel
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 
 // ENUMS
-
 enum Gender {
   MALE
   FEMALE
@@ -100,20 +78,19 @@ enum Occupation {
 }
 
 enum RoomType {
-  // PG room types:-
   SINGLE
   DOUBLE
   TRIPLE
   FLAT
 }
 
-enum Habit{
+enum Habit {
   YES
   NO
   OCCASIONALLY
 }
 
-enum WakeUpTime {
+enum WakeTime {
   EARLY
   MID
   LATE
